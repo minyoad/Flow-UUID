@@ -1,0 +1,12 @@
+{
+    "ID": "ff42a858-5823-4843-a596-979aecc88360",
+    "ActionKeyword": "uuid",
+    "Name": "UUID generator",
+    "Description": "Generates UUID4.",
+    "Author": "Adar Arbiv",
+    "Version": "1.0.0",
+    "Language": "python",
+    "Website": "",
+    "IcoPath": "./icon.png",
+    "ExecuteFileName": "main.py"
+}
