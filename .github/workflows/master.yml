@@ -1,14 +1,42 @@
-name: MainDeployCI
+name: Publish Release
+
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths-ignore:
+      - .github/workflows/*
+      - .gitignore
+      - README.md
+      - LICENSE
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    env:
+      python_ver: 3.8
+
     steps:
-    - uses: actions/checkout@v1
-    - name: Zip Folder
-      run: zip -r release.zip . -x ".git"
-    - name: Release to Github
-      run: echo "Release"
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: get version
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with:
+          path: 'plugin.json'
+          prop_path: 'Version'
+      - run: echo ${{steps.version.outputs.prop}}
+      - name: Install dependencies
+        run: |
+          zip -r Flow-UUID.zip . -x '*.git*'
+      - name: Publish
+        if: success()
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'Flow-UUID.zip'
+          tag_name: "v${{steps.version.outputs.prop}}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
